@@ -25,7 +25,7 @@ if __name__ == "__main__":
     )
 
     plotting_data = run_surface_data_pipeline(
-        instruments, book_summary_by_currency, filterilliquid=True, min_days=15
+        instruments, book_summary_by_currency, filter_illiquid=True, min_days=15
     )
 
     fig = plot_surface(plotting_data)

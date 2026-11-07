@@ -50,9 +50,9 @@ def prepare_surface_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def filter_illiquid_options(df: pd.DataFrame, min_days: int = 7) -> pd.DataFrame:
-    """Remove options that expire soon and that don't have both bid and ask"""
+    """Remove options close to expiration and that don't have both a bid and an ask"""
 
-    df = df[df["time_to_maturity"] > (min_days / 365)]
+    df = df[df["time_to_maturity"] >= (min_days / 365)]
     df = df[df["bid_price"].notna() & df["ask_price"].notna()]
 
     return df
@@ -67,14 +67,14 @@ def select_surface_columns(df: pd.DataFrame) -> pd.DataFrame:
 def run_surface_data_pipeline(
     instruments: list[dict],
     book_summary_by_currency: list[dict],
-    filterilliquid: bool = True,
-    min_days: int = 7
+    filter_illiquid: bool = True,
+    min_days: int = 7,
 ) -> pd.DataFrame:
     """Run full market data pipeline"""
 
     df = merge_market_data(instruments, book_summary_by_currency)
     plotting_data = prepare_surface_data(df=df)
-    if filterilliquid:
+    if filter_illiquid:
         plotting_data = filter_illiquid_options(plotting_data, min_days=min_days)
     plotting_data = select_surface_columns(plotting_data)
 
@@ -90,6 +90,6 @@ if __name__ == "__main__":
     )
 
     plotting_data = run_surface_data_pipeline(
-        instruments, book_summary_by_currency, filterilliquid=True, min_days=7
+        instruments, book_summary_by_currency, filter_illiquid=True, min_days=7
     )
     print(plotting_data.describe())
