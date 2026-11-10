@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+
+from vol_surface.deribit import get_book_summary_by_currency, get_instruments
 from vol_surface.market_data import run_surface_data_pipeline
-from vol_surface.deribit import get_instruments, get_book_summary_by_currency
 
 
 def plot_surface(df: pd.DataFrame) -> plt.Figure:
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     )
 
     plotting_data = run_surface_data_pipeline(
-        instruments, book_summary_by_currency, filterilliquid=True, min_days=15
+        instruments, book_summary_by_currency, filter_illiquid=True, min_days=15
     )
 
     fig = plot_surface(plotting_data)
