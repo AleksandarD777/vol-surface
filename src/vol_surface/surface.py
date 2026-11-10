@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+
+from vol_surface.deribit import get_book_summary_by_currency, get_instruments
 from vol_surface.market_data import run_surface_data_pipeline
-from vol_surface.deribit import get_instruments, get_book_summary_by_currency
 
 
 def plot_surface(df: pd.DataFrame) -> plt.Figure:

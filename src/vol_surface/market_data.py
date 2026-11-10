@@ -1,6 +1,8 @@
-from datetime import datetime, timezone
-import pandas as pd
+from datetime import UTC, datetime
+
 import numpy as np
+import pandas as pd
+
 from vol_surface.deribit import get_book_summary_by_currency, get_instruments
 
 
@@ -38,7 +40,7 @@ def prepare_surface_data(df: pd.DataFrame) -> pd.DataFrame:
     df["moneyness"] = np.log(df["strike"] / df["underlying_price"])
 
     expiry_dt = pd.to_datetime(df["expiration_timestamp"], unit="ms", utc=True)
-    current_dt = datetime.now(timezone.utc)
+    current_dt = datetime.now(UTC)
     df["time_to_maturity"] = (expiry_dt - current_dt) / pd.Timedelta(days=365)
 
     filtered_df = df[

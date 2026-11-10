@@ -1,5 +1,7 @@
+from datetime import UTC, datetime, timedelta
+
 import pandas as pd
-from datetime import datetime, timezone, timedelta
+
 from vol_surface.market_data import filter_illiquid_options, run_surface_data_pipeline
 
 
@@ -39,33 +41,34 @@ def test_filter_keeps_options_with_both_bid_ask():
     assert result.index.tolist() == [2]
 
 
+def expiry_in_days(days: float) -> int:
+    """Return the expiry timestamp in ms, 'days' from now in (UTC)."""
+    expiry = datetime.now(UTC) + timedelta(days=days)
+    return int(expiry.timestamp() * 1000)
+
+
 def test_filter_works_in_pipeline():
 
     # Arrange
     min_days = 10
-    current_dt = datetime.now(timezone.utc)
-    tdelta = timedelta(days=min_days)
-
-    def convert_sec_to_ms(expiry: datetime):
-        return expiry.timestamp() / 1000
 
     instruments = [
         {
             "instrument_name": "a",
-            "expiration_timestamp": convert_sec_to_ms(current_dt + tdelta),
-            "strike": 90.0,
+            "expiration_timestamp": expiry_in_days(5),
+            "strike": 90,
             "option_type": "call",
         },
         {
             "instrument_name": "b",
-            "expiration_timestamp": convert_sec_to_ms(current_dt + 2 * tdelta),
+            "expiration_timestamp": expiry_in_days(10),
             "strike": 90,
             "option_type": "call",
         },
         {
             "instrument_name": "c",
-            "expiration_timestamp": convert_sec_to_ms(current_dt + 3 * tdelta),
-            "strike": 90.0,
+            "expiration_timestamp": expiry_in_days(11),
+            "strike": 90,
             "option_type": "call",
         },
     ]
