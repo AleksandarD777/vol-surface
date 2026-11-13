@@ -9,18 +9,6 @@ from vol_surface.market_data import (
     prepare_surface_data,
 )
 
-"""Black Scholes function, which needs the following parameters: (s,k,T,sigma,r)
-    s: underlying price
-    k: strike
-    T: time to maturity
-    sigma: implied volatility
-    r: risk-free rate
-    
-    The function aims to compute the price of the option"""
-
-
-""" nel main io voglio che mi stampi un dataframe che sia price,s,k,T,sigma,r
-"""
 
 RISK_FREE_RATE = 0.0  # underlying_price is the forward of each expiry, so r = 0
 
@@ -37,7 +25,9 @@ def add_black_scholes_price(
         # take the values of row number i
         s = df["underlying_price"].iloc[i]
         k = df["strike"].iloc[i]
-        sigma = df["mark_iv"].iloc[i] / 100
+        sigma = (
+            df["mark_iv"].iloc[i] / 100
+        )  # the volatility is given in percentage points by Deribit
         t = df["time_to_maturity"].iloc[i]
         option_type = df["option_type"].iloc[i]
 
@@ -60,10 +50,7 @@ def get_d1_d2(
 def black_scholes_price(
     s: float, k: float, r: float, sigma: float, T: float, option_type: str
 ) -> float:
-    """Return the Black-Scholes price of an option call or put.
-
-    With s = forward of the expiry and r = 0 this is Black-76 model (used for Deribit).
-    """
+    """Return the Black-Scholes price of an option call or put."""
     d1, d2 = get_d1_d2(s, k, r, sigma, T)
 
     if option_type == "call":
