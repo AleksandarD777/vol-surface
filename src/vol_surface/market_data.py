@@ -75,6 +75,8 @@ def run_surface_data_pipeline(
     """Run full market data pipeline"""
 
     df = merge_market_data(instruments, book_summary_by_currency)
+    print("questo e' il df:")
+    print(df)
     plotting_data = prepare_surface_data(df=df)
     if filter_illiquid:
         plotting_data = filter_illiquid_options(plotting_data, min_days=min_days)
